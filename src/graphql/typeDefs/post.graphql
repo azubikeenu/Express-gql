@@ -1,0 +1,49 @@
+type Query {
+  getAllPosts: [Post!]!
+  getPost(id: ID!): EntityResponse!
+}
+
+union EntityResponse = PostMutationResponse | ErrorResponse | Post
+
+type Mutation {
+  createPost(createPostInput: CreatePostInput!): EntityResponse!
+  updatePost(id: ID!, updatePostInput: UpdatePostInput!): EntityResponse!
+  deletePost(id: ID!): EntityResponse!
+}
+
+scalar DateTime
+
+type Post {
+  id: ID!
+  title: String!
+  content: String!
+  featuredImage: String
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input CreatePostInput {
+  title: String!
+  content: String!
+  featuredImage: String
+}
+
+input UpdatePostInput {
+  title: String
+  content: String
+  featuredImage: String
+}
+
+type PostMutationResponse {
+  code: String!
+  success: Boolean!
+  message: MutationMessage!
+  post: Post
+}
+
+enum MutationMessage {
+  CREATED
+  DELETED
+  UPDATED
+  FOUND
+}

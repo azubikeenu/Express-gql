@@ -1,0 +1,77 @@
+query GET_ALL_POSTS {
+  getAllPosts {
+    id
+    content
+    title
+    createdAt
+    updatedAt
+  }
+}
+
+mutation CREATE_NEW_POST($createPostInput :CreatePostInput!){
+  createPost (createPostInput: $createPostInput){
+     __typename
+    ...on Post {
+         id
+         title
+         content
+         featuredImage
+         createdAt
+       }
+    }
+  }
+}
+
+
+mutation UPDATEPOST($updatePostId: ID!, $updatePostInput: UpdatePostInput!) {
+  updatePost(id: $updatePostId, updatePostInput: $updatePostInput) {
+    __typename
+    ... on PostMutationResponse {
+      code
+      message
+      success
+      post {
+        id
+      }
+    }
+    ... on ErrorResponse {
+      code
+      error
+      success
+    }
+  }
+}
+
+mutation DELETE_POST($deletePostId: ID!) {
+  deletePost(id: $deletePostId) {
+    __typename
+    ... on PostMutationResponse {
+      code
+      message
+      success
+    }
+    ... on ErrorResponse {
+      code
+      error
+      success
+    }
+  }
+}
+
+query GET_POST($getPostId: ID!) {
+  getPost(id: $getPostId) {
+    __typename
+    ... on Post {
+      id
+      title
+      content
+      featuredImage
+      createdAt
+    }
+    ... on ErrorResponse {
+      success
+      code
+      error
+    }
+  }
+}

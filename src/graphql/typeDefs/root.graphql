@@ -1,0 +1,9 @@
+type ErrorResponse {
+  code: String!
+  success: Boolean!
+  error: ErrorMessage!
+}
+
+enum ErrorMessage {
+  NOT_FOUND
+}
