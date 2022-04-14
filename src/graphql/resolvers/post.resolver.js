@@ -2,8 +2,8 @@ import { StatusCodes } from 'http-status-codes';
 
 import { ErrorResponse } from '../../utils';
 
-
 import { DateTimeResolver } from 'graphql-scalars'
+
 
 import {
   NOTIFICATION_MESSAGES,
@@ -13,6 +13,7 @@ import {
 
 export default {
   DateTime : DateTimeResolver,
+
   Query: {
     getAllPosts: async (_, {}, { Post }) => {
       const posts = await Post.find();

@@ -2,4 +2,4 @@ import { config } from 'dotenv';
 
 const { parsed } = config();
 
-export const { PORT , DB } = parsed;
+export const { PORT, DB, BASE_URL = `http://localhost:${PORT}` } = parsed;

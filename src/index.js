@@ -1,11 +1,13 @@
 import { ApolloServer } from 'apollo-server-express';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
+import { graphqlUploadExpress } from 'graphql-upload';
 import express from 'express';
 import http from 'http';
 import { success, error } from 'consola';
 import { PORT, DB } from './config';
 import { typeDefs, resolvers } from './graphql';
 import * as Models from './models';
+import { join } from 'path';
 
 import mongoose from 'mongoose';
 
@@ -31,6 +33,9 @@ import mongoose from 'mongoose';
     });
     // always start the server before applying any middlewares
     await server.start();
+
+    app.use(graphqlUploadExpress());
+    app.use(express.static(join(__dirname, 'uploads')));
     server.applyMiddleware({ app });
     await new Promise((resolve) => httpServer.listen({ port: PORT }, resolve));
     success({

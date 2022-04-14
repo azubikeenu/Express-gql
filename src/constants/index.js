@@ -6,6 +6,7 @@ export const NOTIFICATION_MESSAGES = {
   created: 'CREATED',
   updated: 'UPDATED',
   deleted: 'DELETED',
+
 };
 
 export const CUSTOM_TYPES = {
