@@ -1,7 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { hash } from 'bcrypt';
 
-
 const userSchema = new Schema(
   {
     userName: {
@@ -33,11 +32,8 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-// this allows the hashing of the password when it is saved
 userSchema.pre('save', async function (next) {
-  //only run when the password is modified
   if (!this.isModified('password')) return next();
-  // hash the password
   this.password = await hash(this.password, 12);
   next();
 });
