@@ -1,14 +1,14 @@
 type Query {
   getAllPosts: [Post!]!
-  getPost(id: ID!): EntityResponse!
+  getPost(id: ID!): PostEntityResponse!
 }
 
-union EntityResponse = PostMutationResponse | ErrorResponse | Post
+union PostEntityResponse = PostMutationResponse | ErrorResponse | Post
 
 type Mutation {
-  createPost(createPostInput: CreatePostInput!): EntityResponse!
-  updatePost(id: ID!, updatePostInput: UpdatePostInput!): EntityResponse!
-  deletePost(id: ID!): EntityResponse!
+  createPost(createPostInput: CreatePostInput!): PostEntityResponse!
+  updatePost(id: ID!, updatePostInput: UpdatePostInput!): PostEntityResponse!
+  deletePost(id: ID!): PostEntityResponse!
 }
 
 scalar DateTime

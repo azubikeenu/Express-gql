@@ -31,6 +31,7 @@ import mongoose from 'mongoose';
       context: { ...Models },
       plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
     });
+
     // always start the server before applying any middlewares
     await server.start();
 

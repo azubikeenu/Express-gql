@@ -1,0 +1,46 @@
+type Query {
+  user_info: String!
+  findById(id: ID!): UserEntityResponse!
+}
+
+union UserEntityResponse =
+    UserMutationResponse
+  | ErrorResponse
+  | UserAuthResponse
+
+type Mutation {
+  createUser(userInput: UserInput!): UserEntityResponse!
+}
+
+input UserInput {
+  firstName: String!
+  lastName: String!
+  userName: String!
+  email: String!
+  password: String!
+  avatar: String
+}
+
+type User {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  userName: String!
+  email: String!
+  avatar: String
+}
+
+type UserMutationResponse {
+  user: User!
+  code: String!
+  success: Boolean!
+  message: MutationMessage!
+}
+
+type UserAuthResponse {
+  user: User!
+  token: String!
+  code: String!
+  success: Boolean!
+  message: MutationMessage!
+}

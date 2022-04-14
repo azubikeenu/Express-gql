@@ -6,4 +6,5 @@ type ErrorResponse {
 
 enum ErrorMessage {
   NOT_FOUND
+  USER_ALREADY_EXISTS
 }
