@@ -7,6 +7,7 @@ import { success, error } from 'consola';
 import { PORT, DB } from './config';
 import { typeDefs, resolvers } from './graphql';
 import * as Models from './models';
+import { AuthMiddleWare } from './middlewares';
 import { join } from 'path';
 
 import mongoose from 'mongoose';
@@ -35,8 +36,9 @@ import mongoose from 'mongoose';
     // always start the server before applying any middlewares
     await server.start();
 
-    app.use(graphqlUploadExpress());
     app.use(express.static(join(__dirname, 'uploads')));
+    app.use(AuthMiddleWare)
+    app.use(graphqlUploadExpress());
     server.applyMiddleware({ app });
     await new Promise((resolve) => httpServer.listen({ port: PORT }, resolve));
     success({

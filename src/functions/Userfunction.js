@@ -2,7 +2,7 @@ import { sign } from 'jsonwebtoken';
 import { SECRET } from '../config';
 import { pick } from 'lodash';
 
-export const issueToken = async (user) => {
+export const issueToken = (user) => {
   return sign(user, SECRET, { expiresIn: 60 * 60 * 24 });
 };
 

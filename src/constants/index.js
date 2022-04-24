@@ -1,6 +1,7 @@
 export const ERROR_MESSAGES = {
   notFound: 'NOT_FOUND',
   alreadyExists: 'USER_ALREADY_EXISTS',
+  invalidCredentials: 'INVALID_CREDENTIALS',
 };
 
 export const NOTIFICATION_MESSAGES = {
@@ -15,5 +16,5 @@ export const CUSTOM_TYPES = {
   post: 'Post',
   user: 'User',
   userMutationResponse: 'UserMutationResponse',
-  userAuthResponse : 'UserAuthResponse'
+  userAuthResponse: 'UserAuthResponse',
 };

@@ -1,12 +1,13 @@
 type Query {
-  user_info: String!
   findById(id: ID!): UserEntityResponse!
+  authenticateUser(username: String!, password: String!): UserEntityResponse
 }
 
 union UserEntityResponse =
     UserMutationResponse
   | ErrorResponse
   | UserAuthResponse
+  | User
 
 type Mutation {
   createUser(userInput: UserInput!): UserEntityResponse!
@@ -34,7 +35,7 @@ type UserMutationResponse {
   user: User!
   code: String!
   success: Boolean!
-  message: MutationMessage!
+  message: MutationMessage
 }
 
 type UserAuthResponse {

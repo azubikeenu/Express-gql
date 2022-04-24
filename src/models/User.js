@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { hash } from 'bcrypt';
+import { hash ,compare } from 'bcrypt';
 
 const userSchema = new Schema(
   {
@@ -37,5 +37,13 @@ userSchema.pre('save', async function (next) {
   this.password = await hash(this.password, 12);
   next();
 });
+
+//creating an instance method (This is avaliable to all user documents)
+userSchema.methods.comparePasswords = async function (
+  candidatePassword,
+  userPassword
+) {
+  return await compare(candidatePassword, userPassword);
+};
 
 export default new model('User', userSchema);

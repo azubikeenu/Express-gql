@@ -12,27 +12,37 @@ import {
 
 export default {
   Query: {
-    user_info: (_, {}, { User }) => {
-      return 'hello user resolver ';
-    },
     findById: async (_, { id }, { User }) => {
       const user = await User.findById(id);
       if (!user) {
+        return handleUserNotFound();
+      }
+      const userDoc = user._doc;
+      userDoc.id = userDoc._id;
+      return { __typename: CUSTOM_TYPES.user, ...userDoc };
+    },
+    authenticateUser: async (_, { username, password }, { User }) => {
+      // find user by username
+      const user = await User.findOne({ username });
+      // compare passwords
+      if (!user || !(await user.comparePasswords(password, user.password))) {
         const error = new ErrorResponse(
           false,
-          ERROR_MESSAGES.notFound,
-          StatusCodes.NOT_FOUND
+          ERROR_MESSAGES.invalidCredentials,
+          StatusCodes.UNAUTHORIZED
         );
         return { __typename: CUSTOM_TYPES.errorResponse, ...error };
       }
+
+      const serializedUser = userFunc.serializeUser(user);
+      const token = userFunc.issueToken(serializedUser);
       const response = {
         code: StatusCodes.OK,
         success: true,
-        message: NOTIFICATION_MESSAGES.updated,
         user,
+        token,
       };
-
-      return { __typename: CUSTOM_TYPES.userMutationResponse, ...response };
+      return { __typename: CUSTOM_TYPES.userAuthResponse, ...response };
     },
   },
   Mutation: {
@@ -46,16 +56,11 @@ export default {
           ERROR_MESSAGES.alreadyExists,
           StatusCodes.BAD_REQUEST
         );
-
         return { __typename: CUSTOM_TYPES.errorResponse, ...error };
       }
-
       const user = await User.create(userInput);
-
       const serializedUser = userFunc.serializeUser(user);
-
       const token = userFunc.issueToken(serializedUser);
-
       const response = {
         code: StatusCodes.OK,
         success: true,
@@ -63,7 +68,17 @@ export default {
         user,
         token,
       };
+      console.log(response);
       return { __typename: CUSTOM_TYPES.userAuthResponse, ...response };
     },
   },
 };
+
+function handleUserNotFound() {
+  const error = new ErrorResponse(
+    false,
+    ERROR_MESSAGES.notFound,
+    StatusCodes.NOT_FOUND
+  );
+  return { __typename: CUSTOM_TYPES.errorResponse, ...error };
+}
