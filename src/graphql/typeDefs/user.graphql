@@ -1,6 +1,6 @@
 type Query {
   findById(id: ID!): UserEntityResponse!
-  authenticateUser(username: String!, password: String!): UserEntityResponse
+  authenticateUser(userName: String!, password: String!): UserEntityResponse
 }
 
 union UserEntityResponse =
@@ -43,5 +43,5 @@ type UserAuthResponse {
   token: String!
   code: String!
   success: Boolean!
-  message: MutationMessage!
+  message: MutationMessage
 }

@@ -17,3 +17,25 @@ query FIND_USER_BY_ID($findByIdId: ID!) {
     }
   }
 }
+
+mutation CREATE_USER($userInput: UserInput!) {
+  createUser(userInput: $userInput) {
+    __typename
+    ... on UserAuthResponse {
+      code
+      message
+      success
+      token
+      user {
+        id
+        email
+        userName
+      }
+    }
+    ... on ErrorResponse {
+      success
+      code
+      error
+    }
+  }
+}

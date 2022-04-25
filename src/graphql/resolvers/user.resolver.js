@@ -21,9 +21,9 @@ export default {
       userDoc.id = userDoc._id;
       return { __typename: CUSTOM_TYPES.user, ...userDoc };
     },
-    authenticateUser: async (_, { username, password }, { User }) => {
+    authenticateUser: async (_, { userName, password }, { User }) => {
       // find user by username
-      const user = await User.findOne({ username });
+      const user = await User.findOne({ userName });
       // compare passwords
       if (!user || !(await user.comparePasswords(password, user.password))) {
         const error = new ErrorResponse(
@@ -31,14 +31,15 @@ export default {
           ERROR_MESSAGES.invalidCredentials,
           StatusCodes.UNAUTHORIZED
         );
+
         return { __typename: CUSTOM_TYPES.errorResponse, ...error };
       }
-
       const serializedUser = userFunc.serializeUser(user);
       const token = userFunc.issueToken(serializedUser);
       const response = {
         code: StatusCodes.OK,
         success: true,
+        message: NOTIFICATION_MESSAGES.created,
         user,
         token,
       };
@@ -47,9 +48,8 @@ export default {
   },
   Mutation: {
     createUser: async (_, { userInput }, { User }) => {
-      const { email, username } = userInput;
-      const foundUser = await User.find({ $or: [{ email }, { username }] });
-
+      const { email, userName } = userInput;
+      const foundUser = await User.find({ $or: [{ email }, { userName }] });
       if (foundUser.length > 0) {
         const error = new ErrorResponse(
           false,
@@ -68,7 +68,6 @@ export default {
         user,
         token,
       };
-      console.log(response);
       return { __typename: CUSTOM_TYPES.userAuthResponse, ...response };
     },
   },
