@@ -39,7 +39,6 @@ export default {
       const response = {
         code: StatusCodes.OK,
         success: true,
-        message: NOTIFICATION_MESSAGES.created,
         user,
         token,
       };
