@@ -9,7 +9,6 @@ const AuthMiddleWare = async (req, res, next) => {
     req.isAuth = false;
     return next();
   }
-
   // Extract the token and check for token
   const token = authHeader.split(' ')[1];
 
@@ -17,7 +16,6 @@ const AuthMiddleWare = async (req, res, next) => {
     req.isAuth = false;
     return next();
   }
-
   // Verify the extracted token
   let decodedToken;
   try {
@@ -26,13 +24,11 @@ const AuthMiddleWare = async (req, res, next) => {
     req.isAuth = false;
     return next();
   }
-
   // If decoded token is null then set authentication of the request false
   if (!decodedToken) {
     req.isAuth = false;
     return next();
   }
-
   // If the user has valid token then Find the user by decoded token's id
   let authUser = await User.findById(decodedToken.id);
   if (!authUser) {

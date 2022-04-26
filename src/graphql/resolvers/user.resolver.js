@@ -34,14 +34,7 @@ export default {
 
         return { __typename: CUSTOM_TYPES.errorResponse, ...error };
       }
-      const serializedUser = userFunc.serializeUser(user);
-      const token = userFunc.issueToken(serializedUser);
-      const response = {
-        code: StatusCodes.OK,
-        success: true,
-        user,
-        token,
-      };
+      const response = createTokenResponse(user);
       return { __typename: CUSTOM_TYPES.userAuthResponse, ...response };
     },
   },
@@ -58,19 +51,24 @@ export default {
         return { __typename: CUSTOM_TYPES.errorResponse, ...error };
       }
       const user = await User.create(userInput);
-      const serializedUser = userFunc.serializeUser(user);
-      const token = userFunc.issueToken(serializedUser);
-      const response = {
-        code: StatusCodes.OK,
-        success: true,
-        message: NOTIFICATION_MESSAGES.created,
-        user,
-        token,
-      };
+      const response = createTokenResponse(user, NOTIFICATION_MESSAGES.created);
       return { __typename: CUSTOM_TYPES.userAuthResponse, ...response };
     },
   },
 };
+
+function createTokenResponse(user, message = null) {
+  const serializedUser = userFunc.serializeUser(user);
+  const token = userFunc.issueToken(serializedUser);
+  const response = {
+    code: StatusCodes.OK,
+    success: true,
+    message,
+    user,
+    token,
+  };
+  return response;
+}
 
 function handleUserNotFound() {
   const error = new ErrorResponse(

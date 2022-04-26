@@ -36,7 +36,6 @@ userSchema.pre('save', async function (next) {
   this.password = await hash(this.password, 12);
   next();
 });
-
 //creating an instance method (This is avaliable to all user documents)
 userSchema.methods.comparePasswords = async function (
   candidatePassword,
