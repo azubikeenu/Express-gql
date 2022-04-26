@@ -1,8 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 
-import { ErrorResponse } from '../../utils';
-
-import { userFunc } from '../../functions';
+import { helperUtils } from '../../utils';
 
 import {
   NOTIFICATION_MESSAGES,
@@ -15,26 +13,24 @@ export default {
     findById: async (_, { id }, { User }) => {
       const user = await User.findById(id);
       if (!user) {
-        return handleUserNotFound();
+        return helperUtils.handleError(
+          StatusCodes.NOT_FOUND,
+          ERROR_MESSAGES.notFound
+        );
       }
       const userDoc = user._doc;
       userDoc.id = userDoc._id;
       return { __typename: CUSTOM_TYPES.user, ...userDoc };
     },
     authenticateUser: async (_, { userName, password }, { User }) => {
-      // find user by username
       const user = await User.findOne({ userName });
-      // compare passwords
       if (!user || !(await user.comparePasswords(password, user.password))) {
-        const error = new ErrorResponse(
-          false,
-          ERROR_MESSAGES.invalidCredentials,
-          StatusCodes.UNAUTHORIZED
+        return helperUtils.handleError(
+          StatusCodes.UNAUTHORIZED,
+          ERROR_MESSAGES.invalidCredentials
         );
-
-        return { __typename: CUSTOM_TYPES.errorResponse, ...error };
       }
-      const response = createTokenResponse(user);
+      const response = helperUtils.createTokenResponse(user);
       return { __typename: CUSTOM_TYPES.userAuthResponse, ...response };
     },
   },
@@ -43,38 +39,17 @@ export default {
       const { email, userName } = userInput;
       const foundUser = await User.find({ $or: [{ email }, { userName }] });
       if (foundUser.length > 0) {
-        const error = new ErrorResponse(
-          false,
-          ERROR_MESSAGES.alreadyExists,
-          StatusCodes.BAD_REQUEST
+        return helperUtils.handleError(
+          StatusCodes.BAD_REQUEST,
+          ERROR_MESSAGES.alreadyExists
         );
-        return { __typename: CUSTOM_TYPES.errorResponse, ...error };
       }
       const user = await User.create(userInput);
-      const response = createTokenResponse(user, NOTIFICATION_MESSAGES.created);
+      const response = helperUtils.createTokenResponse(
+        user,
+        NOTIFICATION_MESSAGES.created
+      );
       return { __typename: CUSTOM_TYPES.userAuthResponse, ...response };
     },
   },
 };
-
-function createTokenResponse(user, message = null) {
-  const serializedUser = userFunc.serializeUser(user);
-  const token = userFunc.issueToken(serializedUser);
-  const response = {
-    code: StatusCodes.OK,
-    success: true,
-    message,
-    user,
-    token,
-  };
-  return response;
-}
-
-function handleUserNotFound() {
-  const error = new ErrorResponse(
-    false,
-    ERROR_MESSAGES.notFound,
-    StatusCodes.NOT_FOUND
-  );
-  return { __typename: CUSTOM_TYPES.errorResponse, ...error };
-}
