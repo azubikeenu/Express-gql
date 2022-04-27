@@ -9,6 +9,10 @@ const AuthMiddleWare = async (req, res, next) => {
     req.isAuth = false;
     return next();
   }
+  if (!authHeader.startsWith('Bearer')) {
+    req.isAuth = false;
+    return next();
+  }
   // Extract the token and check for token
   const token = authHeader.split(' ')[1];
 
@@ -35,7 +39,6 @@ const AuthMiddleWare = async (req, res, next) => {
     req.isAuth = false;
     return next();
   }
-
   req.isAuth = true;
   req.user = authUser;
   return next();

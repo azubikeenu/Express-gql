@@ -1,5 +1,5 @@
 type Query {
-  getAllPosts: [Post!]!
+  getAllPosts: [Post!]! @auth
   getPost(id: ID!): PostEntityResponse!
 }
 

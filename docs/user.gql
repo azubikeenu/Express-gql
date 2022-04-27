@@ -1,19 +1,18 @@
-query FIND_USER_BY_ID($findByIdId: ID!) {
-  findById(id: $findByIdId) {
+query FIND_USER_BY_ID($id: ID!) {
+  findById(id: $id) {
     __typename
     ... on ErrorResponse {
       code
       error
       success
     }
-    ... on UserMutationResponse {
-      code
-      message
-      success
-      user {
-        email
-        id
-      }
+    ... on User {
+      id
+      firstName
+      lastName
+      userName
+      email
+      avatar
     }
   }
 }

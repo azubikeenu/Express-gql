@@ -18,9 +18,7 @@ export default {
           ERROR_MESSAGES.notFound
         );
       }
-      const userDoc = user._doc;
-      userDoc.id = userDoc._id;
-      return { __typename: CUSTOM_TYPES.user, ...userDoc };
+      return { __typename: CUSTOM_TYPES.user, ...user._doc, id: user._id };
     },
     authenticateUser: async (_, { userName, password }, { User }) => {
       const user = await User.findOne({ userName });

@@ -1,9 +1,8 @@
 import { StatusCodes } from 'http-status-codes';
 
-import { ErrorResponse } from '../../utils';
+import { helperUtils } from '../../utils';
 
-import { DateTimeResolver } from 'graphql-scalars'
-
+import { DateTimeResolver } from 'graphql-scalars';
 
 import {
   NOTIFICATION_MESSAGES,
@@ -12,9 +11,10 @@ import {
 } from '../../constants';
 
 export default {
-  DateTime : DateTimeResolver,
+  DateTime: DateTimeResolver,
 
   Query: {
+    hello: () => 'Hello World',
     getAllPosts: async (_, {}, { Post }) => {
       const posts = await Post.find();
       return posts;
@@ -23,14 +23,11 @@ export default {
       const post = await Post.findById(id);
 
       if (!post) {
-        const error = new ErrorResponse(
-          false,
-          ERROR_MESSAGES.notFound,
-          StatusCodes.NOT_FOUND
+        return helperUtils.handleError(
+          StatusCodes.NOT_FOUND,
+          NOTIFICATION_MESSAGES.notFound
         );
-        return { __typename: CUSTOM_TYPES.errorResponse, ...error };
       }
-
       return { __typename: CUSTOM_TYPES.post, ...post._doc, id: post._id };
     },
   },
@@ -49,12 +46,10 @@ export default {
         runValidations: true,
       });
       if (!post) {
-        const error = new ErrorResponse(
-          false,
-          ERROR_MESSAGES.notFound,
-          StatusCodes.NOT_FOUND
+        return helperUtils.handleError(
+          StatusCodes.NOT_FOUND,
+          ERROR_MESSAGES.notFound
         );
-        return { __typename: CUSTOM_TYPES.errorResponse, ...error };
       }
       const response = {
         code: StatusCodes.OK,
@@ -69,14 +64,11 @@ export default {
     deletePost: async (_, { id }, { Post }) => {
       const post = await Post.findByIdAndDelete(id);
       if (!post) {
-        const error = new ErrorResponse(
-          false,
-          ERROR_MESSAGES.notFound,
-          StatusCodes.NOT_FOUND
+        return helperUtils.handleError(
+          StatusCodes.NOT_FOUND,
+          ERROR_MESSAGES.notFound
         );
-        return { __typename: CUSTOM_TYPES.errorResponse, ...error };
       }
-
       const response = {
         code: StatusCodes.NO_CONTENT,
         success: true,

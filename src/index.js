@@ -8,9 +8,13 @@ import { PORT, DB } from './config';
 import { typeDefs, resolvers } from './graphql';
 import * as Models from './models';
 import { AuthMiddleWare } from './middlewares';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 import { join } from 'path';
-
 import mongoose from 'mongoose';
+import {
+  upperDirectiveTransformer,
+  authenticationDirective,
+} from './graphql/directives';
 
 (async function startApolloServer(typeDefs, resolvers) {
   // CONNECT TO MONGO DB
@@ -25,11 +29,27 @@ import mongoose from 'mongoose';
     });
 
     const app = express();
-    const httpServer = http.createServer(app);
-    const server = new ApolloServer({
+    let schema = makeExecutableSchema({
       typeDefs,
       resolvers,
-      context: { ...Models },
+    });
+
+    // Transform the schema by applying directive logic
+    schema = upperDirectiveTransformer(schema, 'upper');
+    schema = authenticationDirective(schema, 'auth');
+
+    const httpServer = http.createServer(app);
+    const server = new ApolloServer({
+      schema,
+      context: ({ req }) => {
+        const { isAuth, user } = req;
+        return {
+          req,
+          isAuth,
+          user,
+          ...Models,
+        };
+      },
       plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
     });
 
@@ -37,7 +57,7 @@ import mongoose from 'mongoose';
     await server.start();
 
     app.use(express.static(join(__dirname, 'uploads')));
-    app.use(AuthMiddleWare)
+    app.use(AuthMiddleWare);
     app.use(graphqlUploadExpress());
     server.applyMiddleware({ app });
     await new Promise((resolve) => httpServer.listen({ port: PORT }, resolve));

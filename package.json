@@ -15,6 +15,8 @@
     "@graphql-tools/load": "7.5.6",
     "@graphql-tools/load-files": "6.5.3",
     "@graphql-tools/merge": "8.2.6",
+    "@graphql-tools/schema": "^8.3.10",
+    "@graphql-tools/utils": "^8.6.9",
     "apollo-server-core": "^3.6.7",
     "apollo-server-express": "^3.6.7",
     "bcrypt": "^5.0.1",
@@ -36,6 +38,7 @@
     "@babel/core": "^7.17.9",
     "@babel/node": "^7.16.8",
     "@babel/plugin-proposal-object-rest-spread": "^7.17.3",
+    "@babel/plugin-transform-classes": "^7.16.7",
     "@babel/plugin-transform-object-assign": "^7.16.7",
     "@babel/preset-env": "^7.16.11",
     "cross-env": "^7.0.3"
