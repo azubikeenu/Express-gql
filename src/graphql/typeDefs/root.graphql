@@ -1,4 +1,3 @@
-directive @upper on FIELD_DEFINITION
 directive @auth on FIELD_DEFINITION
 
 type ErrorResponse {
@@ -11,8 +10,5 @@ enum ErrorMessage {
   NOT_FOUND
   USER_ALREADY_EXISTS
   INVALID_CREDENTIALS
-}
-
-type Query {
-  hello: String @upper
+  NOT_AUTHORIZED
 }

@@ -31,6 +31,17 @@ export default {
       const response = helperUtils.createTokenResponse(user);
       return { __typename: CUSTOM_TYPES.userAuthResponse, ...response };
     },
+    authUserProfile: async (_, {}, { user, User }) => {
+      const foundUser = await User.findById(user._id);
+      if (!foundUser) {
+        return helperUtils.handleError(
+          StatusCodes.NOT_FOUND,
+          ERROR_MESSAGES.notFound
+        );
+      }
+
+      return { __typename: CUSTOM_TYPES.user, ...user._doc, id: user._id };
+    },
   },
   Mutation: {
     createUser: async (_, { userInput }, { User }) => {

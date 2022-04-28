@@ -1,14 +1,15 @@
 type Query {
-  getAllPosts: [Post!]! @auth
+  getAllPosts: [Post!]!
   getPost(id: ID!): PostEntityResponse!
 }
 
 union PostEntityResponse = PostMutationResponse | ErrorResponse | Post
 
 type Mutation {
-  createPost(createPostInput: CreatePostInput!): PostEntityResponse!
+  createPost(createPostInput: CreatePostInput!): PostEntityResponse! @auth
   updatePost(id: ID!, updatePostInput: UpdatePostInput!): PostEntityResponse!
-  deletePost(id: ID!): PostEntityResponse!
+    @auth
+  deletePost(id: ID!): PostEntityResponse! @auth
 }
 
 scalar DateTime
@@ -18,6 +19,7 @@ type Post {
   title: String!
   content: String!
   featuredImage: String
+  author: User!
   createdAt: DateTime
   updatedAt: DateTime
 }

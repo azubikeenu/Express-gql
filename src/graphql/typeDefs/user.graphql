@@ -1,6 +1,7 @@
 type Query {
-  findById(id: ID!): UserEntityResponse!
-  authenticateUser(userName: String!, password: String!): UserEntityResponse
+  findById(id: ID!): UserEntityResponse! @auth
+  authenticateUser(userName: String!, password: String!): UserEntityResponse!
+  authUserProfile: UserEntityResponse! @auth
 }
 
 union UserEntityResponse =
@@ -10,7 +11,7 @@ union UserEntityResponse =
   | User
 
 type Mutation {
-  createUser(userInput: UserInput!): UserEntityResponse!
+  createUser(userInput: UserInput!): UserEntityResponse! @auth
 }
 
 input UserInput {

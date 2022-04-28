@@ -14,7 +14,6 @@ export default function authenticationDirective(schema, directiveName) {
 
         fieldConfig.resolve = async function (source, args, context, info) {
           let { isAuth, user } = context;
-
           if (isAuth) {
             const result = await resolve(source, args, context, info);
             return result;

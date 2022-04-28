@@ -12,7 +12,6 @@ import { makeExecutableSchema } from '@graphql-tools/schema';
 import { join } from 'path';
 import mongoose from 'mongoose';
 import {
-  upperDirectiveTransformer,
   authenticationDirective,
 } from './graphql/directives';
 
@@ -35,7 +34,6 @@ import {
     });
 
     // Transform the schema by applying directive logic
-    schema = upperDirectiveTransformer(schema, 'upper');
     schema = authenticationDirective(schema, 'auth');
 
     const httpServer = http.createServer(app);
