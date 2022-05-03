@@ -11,9 +11,7 @@ import { AuthMiddleWare } from './middlewares';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { join } from 'path';
 import mongoose from 'mongoose';
-import {
-  authenticationDirective,
-} from './graphql/directives';
+import { authenticationDirective } from './graphql/directives';
 
 (async function startApolloServer(typeDefs, resolvers) {
   // CONNECT TO MONGO DB

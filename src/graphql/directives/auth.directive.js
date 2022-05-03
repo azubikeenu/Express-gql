@@ -13,7 +13,7 @@ export default function authenticationDirective(schema, directiveName) {
         const { resolve = defaultFieldResolver } = fieldConfig;
 
         fieldConfig.resolve = async function (source, args, context, info) {
-          let { isAuth, user } = context;
+          let { isAuth } = context;
           if (isAuth) {
             const result = await resolve(source, args, context, info);
             return result;

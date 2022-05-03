@@ -11,7 +11,7 @@ union UserEntityResponse =
   | User
 
 type Mutation {
-  createUser(userInput: UserInput!): UserEntityResponse! @auth
+  createUser(userInput: UserInput!): UserEntityResponse!
 }
 
 input UserInput {

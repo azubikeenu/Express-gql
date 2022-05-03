@@ -6,6 +6,8 @@ import { DateTimeResolver } from 'graphql-scalars';
 
 import { ApolloError } from 'apollo-server-core';
 
+import { postValidators } from '../../validators';
+
 import {
   NOTIFICATION_MESSAGES,
   ERROR_MESSAGES,
@@ -30,7 +32,7 @@ export default {
         if (!post) {
           return helperUtils.handleError(
             StatusCodes.NOT_FOUND,
-            NOTIFICATION_MESSAGES.notFound
+            ERROR_MESSAGES.notFound
           );
         }
         return { __typename: CUSTOM_TYPES.post, ...post._doc, id: post._id };
@@ -42,6 +44,11 @@ export default {
   Mutation: {
     createPost: async (_, { createPostInput }, { Post, user }) => {
       try {
+        const { title, content } = createPostInput;
+        await postValidators.NewPostRules.validate(
+          { title, content },
+          { abortEarly: false }
+        );
         const post = Post.create({
           ...createPostInput,
           author: user._id,
@@ -53,10 +60,13 @@ export default {
           id: post._id,
         };
       } catch (err) {
-        throw new ApolloError(err.message, StatusCodes.INTERNAL_SERVER_ERROR);
+        const errors = err?.errors;
+        throw new ApolloError(err.message, StatusCodes.INTERNAL_SERVER_ERROR, {
+          errors,
+        });
       }
     },
-    updatePost: async (_, { updatePostInput, id }, { Post ,user}) => {
+    updatePost: async (_, { updatePostInput, id }, { Post, user }) => {
       try {
         const post = await Post.findOneAndUpdate(
           { _id: id, author: user._id.toString() },
@@ -85,7 +95,7 @@ export default {
       }
     },
 
-    deletePost: async (_, { id }, { Post ,user }) => {
+    deletePost: async (_, { id }, { Post, user }) => {
       try {
         const post = await Post.findOneAndDelete({
           _id: id,

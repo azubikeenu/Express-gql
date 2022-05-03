@@ -38,3 +38,42 @@ mutation CREATE_USER($userInput: UserInput!) {
     }
   }
 }
+
+query AUTHENTICATE_USER($username: String!, $password: String!) {
+  authenticateUser(userName: $username, password: $password) {
+    __typename
+    ... on ErrorResponse {
+      code
+      error
+      success
+    }
+
+    ... on UserAuthResponse {
+      code
+      success
+      token
+      user {
+        id
+        userName
+        email
+      }
+    }
+  }
+}
+
+query USER_PROFILE {
+  authUserProfile {
+    __typename
+    ... on ErrorResponse {
+      code
+      error
+      success
+    }
+    ... on User {
+      firstName
+      email
+      id
+      userName
+    }
+  }
+}
